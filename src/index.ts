@@ -21,6 +21,7 @@ const schema = gql`
     username: String!
     firstName: String!
     lastName: String!
+    messages: [Message!]
   }
 
   type Message {
@@ -30,8 +31,10 @@ const schema = gql`
   }
 `;
 
+type ID = string | number;
+
 interface User {
-  id: string;
+  id: ID;
   firstName: string;
   lastName: string;
 }
@@ -45,9 +48,9 @@ const users: Users = {
 };
 
 interface Message {
-  id: string;
+  id: ID;
   text: string;
-  userId: string;
+  userId: ID;
 }
 interface Messages {
   [key: string]: Message;
@@ -55,7 +58,8 @@ interface Messages {
 
 const messages: Messages = {
   "1": { id: "1", text: "Hello, world!", userId: "1" },
-  "2": { id: "2", text: "from GraphQL and Apollo-Server.", userId: "2" }
+  "2": { id: "2", text: "from GraphQL and Apollo-Server.", userId: "2" },
+  "3": { id: "3", text: "textextext", userId: "2" }
 };
 
 const resolvers: IResolvers = {
@@ -67,7 +71,11 @@ const resolvers: IResolvers = {
     message: (parent, { id }) => messages[id]
   },
   User: {
-    username: (user: User) => `${user.firstName} ${user.lastName}`
+    username: (user: User) => `${user.firstName} ${user.lastName}`,
+    messages: (user: User) =>
+      Object.values(messages)
+        .filter(m => +m.userId === +user.id)
+        .map(m => messages[m.id])
   },
   Message: {
     user: (message: Message) => users[message.userId]
