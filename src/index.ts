@@ -16,34 +16,40 @@ const schema = gql`
   type User {
     id: ID!
     username: String!
+    firstName: String!
+    lastName: String!
   }
 `;
 
 interface User {
   id: string;
-  username: string;
+  firstName: string;
+  lastName: string;
 }
 interface Users {
   [key: string]: User;
 }
 
 const users: Users = {
-  "1": { id: "1", username: "mkubara" },
-  "2": { id: "2", username: "suzukalight" }
+  "1": { id: "1", firstName: "masahiko", lastName: "kubara" },
+  "2": { id: "2", firstName: "suzuka", lastName: "light" }
 };
-const me = users[1];
 
 const resolvers: IResolvers = {
   Query: {
-    me: () => me,
+    me: (parent, args, { me }) => me,
     users: () => Object.values(users),
     user: (parent, { id }) => users[id] || null
+  },
+  User: {
+    username: (user: User) => `${user.firstName} ${user.lastName}`
   }
 };
 
 const server = new ApolloServer({
   typeDefs: schema,
-  resolvers
+  resolvers,
+  context: { me: users[2] }
 });
 
 server.applyMiddleware({ app, path: "/graphql" });
