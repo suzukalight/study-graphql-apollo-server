@@ -1,6 +1,6 @@
-import express from "express";
-import cors from "cors";
-import { ApolloServer, gql, IResolvers } from "apollo-server-express";
+import express from 'express';
+import cors from 'cors';
+import { ApolloServer, gql, IResolvers } from 'apollo-server-express';
 
 const app = express();
 
@@ -43,8 +43,8 @@ interface Users {
 }
 
 const users: Users = {
-  "1": { id: "1", firstName: "masahiko", lastName: "kubara" },
-  "2": { id: "2", firstName: "suzuka", lastName: "light" }
+  '1': { id: '1', firstName: 'masahiko', lastName: 'kubara' },
+  '2': { id: '2', firstName: 'suzuka', lastName: 'light' },
 };
 
 interface Message {
@@ -57,9 +57,9 @@ interface Messages {
 }
 
 const messages: Messages = {
-  "1": { id: "1", text: "Hello, world!", userId: "1" },
-  "2": { id: "2", text: "from GraphQL and Apollo-Server.", userId: "2" },
-  "3": { id: "3", text: "textextext", userId: "2" }
+  '1': { id: '1', text: 'Hello, world!', userId: '1' },
+  '2': { id: '2', text: 'from GraphQL and Apollo-Server.', userId: '2' },
+  '3': { id: '3', text: 'textextext', userId: '2' },
 };
 
 const resolvers: IResolvers = {
@@ -68,28 +68,28 @@ const resolvers: IResolvers = {
     users: () => Object.values(users),
     user: (parent, { id }) => users[id],
     messages: () => Object.values(messages),
-    message: (parent, { id }) => messages[id]
+    message: (parent, { id }) => messages[id],
   },
   User: {
     username: (user: User) => `${user.firstName} ${user.lastName}`,
     messages: (user: User) =>
       Object.values(messages)
         .filter(m => +m.userId === +user.id)
-        .map(m => messages[m.id])
+        .map(m => messages[m.id]),
   },
   Message: {
-    user: (message: Message) => users[message.userId]
-  }
+    user: (message: Message) => users[message.userId],
+  },
 };
 
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
-  context: { me: users[2] }
+  context: { me: users[2] },
 });
 
-server.applyMiddleware({ app, path: "/graphql" });
+server.applyMiddleware({ app, path: '/graphql' });
 
 app.listen({ port: 23456 }, () => {
-  console.log("server on http://localhost:23456/graphql");
+  console.log('server on http://localhost:23456/graphql');
 });
