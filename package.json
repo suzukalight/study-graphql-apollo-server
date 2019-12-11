@@ -29,7 +29,8 @@
     "typescript": "^3.7.3"
   },
   "scripts": {
+    "lint": "yarn workspace 01-schema lint",
     "dev:01": "yarn workspace 01-schema dev",
-    "lint": "yarn workspace 01-schema lint"
+    "dev:02": "yarn workspace 02-mutation dev"
   }
 }
