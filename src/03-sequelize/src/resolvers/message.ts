@@ -1,35 +1,30 @@
 import { IResolvers } from 'apollo-server-express';
-import uuidv4 from 'uuid/v4';
 
-const resolvers: IResolvers = {
+import { User } from '../models/user';
+import { Message } from '../models/message';
+import { Models } from '../models';
+import { ResolverContext } from './typings';
+
+const resolvers: IResolvers<Message, ResolverContext> = {
   Query: {
-    messages: (parent, args, { models }) => Object.values(models.messages),
-    message: (parent, { id }, { models }) => models.messages[id],
+    messages: async (parent, args, { models }) => models.Message.findAll(),
+    message: async (parent, { id }, { models }) => models.Message.findByPk(id),
   },
 
   Mutation: {
-    createMessage: (parent, { text }, { me, models }) => {
-      const id = uuidv4();
-      const message = {
-        id,
+    createMessage: async (parent, { text }, { me, models }) =>
+      models.Message.create({
         text,
         userId: me.id,
-      };
-      models.messages[id] = message;
-      console.log('message keys', Object.keys(models.messages));
-      return message;
-    },
-    deleteMessage: (parent, { id }, { models }) => {
-      const { [id]: message, ...otherMesasges } = models.messages;
-      if (!message) return false;
-      models.messages = otherMesasges;
-      console.log('message keys', Object.keys(models.messages));
-      return true;
-    },
+      }),
+    deleteMessage: async (parent, { id }, { models }) =>
+      models.Message.destroy({
+        where: { id },
+      }),
   },
 
   Message: {
-    user: (message: Message, args, { models }) => models.users[message.userId],
+    user: async (message, args, { models }) => models.User.findByPk(message.userId),
   },
 };
 
