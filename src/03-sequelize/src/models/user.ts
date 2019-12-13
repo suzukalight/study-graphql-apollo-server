@@ -1,9 +1,9 @@
 import { Model, Association, DataTypes, HasManyCreateAssociationMixin } from 'sequelize';
 
 import { sequelize } from '../infrastructure/sequelize';
-import { Message } from './message';
+import Message from './message';
 
-export class User extends Model {
+class User extends Model {
   public id!: number;
   public lastName!: string;
   public firstName!: string;
@@ -45,3 +45,5 @@ User.hasMany(Message, {
   foreignKey: 'userId',
   as: 'messages',
 });
+
+export default User;

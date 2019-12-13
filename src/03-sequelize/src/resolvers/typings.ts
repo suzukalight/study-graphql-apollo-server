@@ -1,4 +1,4 @@
-import { User } from '../models/user';
+import User from '../models/user';
 import { Models } from '../models';
 
 export interface ResolverContext {

@@ -1,6 +1,6 @@
 import { IResolvers } from 'apollo-server-express';
 
-import { User } from '../models/user';
+import User from '../models/user';
 import { ResolverContext } from './typings';
 
 const resolvers: IResolvers<User, ResolverContext> = {

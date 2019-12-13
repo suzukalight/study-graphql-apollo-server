@@ -2,7 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 
 import { sequelize } from '../infrastructure/sequelize';
 
-export class Message extends Model {
+class Message extends Model {
   public id!: number;
   public text!: string;
   public userId!: number;
@@ -28,3 +28,5 @@ Message.init(
     sequelize: sequelize,
   },
 );
+
+export default Message;
