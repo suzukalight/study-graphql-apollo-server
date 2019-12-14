@@ -3,7 +3,7 @@ import { combineResolvers } from 'graphql-resolvers';
 
 import Message from '../models/message';
 import { ResolverContext } from './typings';
-import { isAuthenticated } from './authorization';
+import { isAuthenticated, isMessageOwner } from './authorization';
 
 const resolvers: IResolvers<Message, ResolverContext> = {
   Query: {
@@ -18,10 +18,14 @@ const resolvers: IResolvers<Message, ResolverContext> = {
         userId: me.id,
       }),
     ),
-    deleteMessage: async (parent, { id }, { models }) =>
-      models.Message.destroy({
-        where: { id },
-      }),
+    deleteMessage: combineResolvers(
+      isAuthenticated,
+      isMessageOwner,
+      async (parent, { id }, { models }) =>
+        models.Message.destroy({
+          where: { id },
+        }),
+    ),
   },
 
   Message: {
