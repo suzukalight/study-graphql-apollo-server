@@ -1,7 +1,8 @@
-import express from 'express';
+import express, { Request } from 'express';
 import cors from 'cors';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 
 import schema from './schema';
 import resolvers from './resolvers';
@@ -14,17 +15,31 @@ const app = express();
 
 app.use(cors());
 
+const getMe = async (req: Request) => {
+  const token = <string>req.headers['x-token'];
+  if (token) {
+    try {
+      return jwt.verify(token, <string>process.env.JWT_SECRET);
+    } catch (e) {
+      throw new AuthenticationError('Your session expired. Sign in again.');
+    }
+  }
+};
+
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
-  context: async () => ({
-    models,
-    me: await models.User.findByPk(2),
-    jwt: { secret: process.env.JWT_SECRET, expiresIn: process.env.JWT_EXPIRES_IN },
-  }),
+  context: async ({ req }) => {
+    const me = await getMe(req);
+    return {
+      models,
+      me,
+      jwt: { secret: process.env.JWT_SECRET, expiresIn: process.env.JWT_EXPIRES_IN },
+    };
+  },
   formatError: error => {
     const message = error.message
-      .replace('Sequelize ValicationError: ', '')
+      .replace('Sequelize ValidationError: ', '')
       .replace('Validation error: ', '');
 
     return {
