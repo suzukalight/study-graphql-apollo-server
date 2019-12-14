@@ -1,4 +1,4 @@
-import { IResolvers } from 'apollo-server-express';
+import { IResolvers, UserInputError, AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 
 import User from '../models/user';
@@ -19,6 +19,15 @@ const resolvers: IResolvers<User, ResolverContext> = {
   Mutation: {
     signUp: async (parent, { lastName, firstName, email, password }, { models, jwt }) => {
       const user = await models.User.create({ lastName, firstName, email, password });
+      return { token: createToken(user, jwt.secret, jwt.expiresIn) };
+    },
+    signIn: async (parent, { email, password }, { models, jwt }) => {
+      const user = await models.User.findByEmail(email);
+      if (!user) throw new UserInputError('No user found with this login credentials.');
+
+      const isValid = await user.validatePassword(password);
+      if (!isValid) throw new AuthenticationError('Invalid password.');
+
       return { token: createToken(user, jwt.secret, jwt.expiresIn) };
     },
   },
