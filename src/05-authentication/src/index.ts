@@ -1,11 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
+import dotenv from 'dotenv';
 
 import schema from './schema';
 import resolvers from './resolvers';
 import models, { sequelize } from './models';
 import { createUsersWithMessages } from './seed';
+
+dotenv.config();
 
 const app = express();
 
@@ -17,6 +20,7 @@ const server = new ApolloServer({
   context: async () => ({
     models,
     me: await models.User.findByPk(2),
+    jwt: { secret: process.env.JWT_SECRET, expiresIn: process.env.JWT_EXPIRES_IN },
   }),
   formatError: error => {
     const message = error.message
