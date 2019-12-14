@@ -24,6 +24,7 @@
     "dev:02": "yarn workspace 02-mutation dev",
     "dev:03": "yarn workspace 03-sequelize dev",
     "dev:04": "yarn workspace 04-validation dev",
-    "dev": "yarn dev:04"
+    "dev:05": "yarn workspace 05-authentication dev",
+    "dev": "yarn dev:05"
   }
 }
