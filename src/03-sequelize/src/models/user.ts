@@ -11,6 +11,8 @@ class User extends Model {
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
+  public readonly messages?: Message[];
+
   public createMessage!: HasManyCreateAssociationMixin<Message>;
 
   public static associations: {
