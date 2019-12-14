@@ -1,4 +1,5 @@
 import { Model, Association, DataTypes, HasManyCreateAssociationMixin } from 'sequelize';
+import bcrypt from 'bcrypt';
 
 import { sequelize } from '../infrastructure/sequelize';
 import Message from './message';
@@ -21,6 +22,11 @@ class User extends Model {
     messages: Association<User, Message>;
   };
 }
+
+const generatePasswordHash = async (user: User) => {
+  const saltRounds = 10;
+  return await bcrypt.hash(user.password, saltRounds);
+};
 
 User.init(
   {
@@ -57,6 +63,11 @@ User.init(
   {
     tableName: 'users',
     sequelize: sequelize,
+    hooks: {
+      beforeCreate: async (user, options) => {
+        user.password = await generatePasswordHash(user);
+      },
+    },
   },
 );
 
