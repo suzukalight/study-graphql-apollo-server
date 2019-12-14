@@ -7,6 +7,8 @@ class User extends Model {
   public id!: number;
   public lastName!: string;
   public firstName!: string;
+  public email!: string;
+  public password!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -34,6 +36,22 @@ User.init(
     firstName: {
       type: DataTypes.STRING(250),
       allowNull: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        isEmail: true,
+      },
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        len: [7, 42],
+      },
     },
   },
   {
