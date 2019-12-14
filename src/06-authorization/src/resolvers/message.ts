@@ -1,9 +1,9 @@
 import { IResolvers } from 'apollo-server-express';
+import { combineResolvers } from 'graphql-resolvers';
 
-import User from '../models/user';
 import Message from '../models/message';
-import { Models } from '../models';
 import { ResolverContext } from './typings';
+import { isAuthenticated } from './authorization';
 
 const resolvers: IResolvers<Message, ResolverContext> = {
   Query: {
@@ -12,11 +12,12 @@ const resolvers: IResolvers<Message, ResolverContext> = {
   },
 
   Mutation: {
-    createMessage: async (parent, { text }, { me, models }) =>
+    createMessage: combineResolvers(isAuthenticated, async (parent, { text }, { me, models }) =>
       models.Message.create({
         text,
         userId: me.id,
       }),
+    ),
     deleteMessage: async (parent, { id }, { models }) =>
       models.Message.destroy({
         where: { id },
