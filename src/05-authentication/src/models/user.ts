@@ -18,6 +18,9 @@ class User extends Model {
 
   public createMessage!: HasManyCreateAssociationMixin<Message>;
 
+  public static findByEmail: (email: string) => Promise<User | null>;
+  public validatePassword!: (password: string) => Promise<boolean>;
+
   public static associations: {
     messages: Association<User, Message>;
   };
@@ -76,5 +79,14 @@ User.hasMany(Message, {
   foreignKey: 'userId',
   as: 'messages',
 });
+
+User.findByEmail = async (email: string) =>
+  User.findOne({
+    where: { email },
+  });
+
+User.prototype.validatePassword = async function(password: string) {
+  return await bcrypt.compare(password, this.password);
+};
 
 export default User;
