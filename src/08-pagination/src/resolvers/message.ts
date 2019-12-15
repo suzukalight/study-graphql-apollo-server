@@ -6,12 +6,15 @@ import Message from '../models/message';
 import { ResolverContext } from './typings';
 import { isAuthenticated, isMessageOwner } from './authorization';
 
+const toCursorHash = (string: string) => Buffer.from(string).toString('base64');
+const fromCursorHash = (string: string) => Buffer.from(string, 'base64').toString('ascii');
+
 const resolvers: IResolvers<Message, ResolverContext> = {
   Query: {
     messages: async (parent, { cursor, limit = 100 }, { models }) => {
       const cursorOptions = cursor
         ? {
-            where: { createdAt: { [Op.lt]: cursor } },
+            where: { createdAt: { [Op.lt]: fromCursorHash(cursor) } },
           }
         : {};
       const messages = await models.Message.findAll({
@@ -24,7 +27,10 @@ const resolvers: IResolvers<Message, ResolverContext> = {
 
       return {
         edges,
-        pageInfo: { hasNextPage, endCursor: edges[edges.length - 1].createdAt },
+        pageInfo: {
+          hasNextPage,
+          endCursor: toCursorHash(edges[edges.length - 1].createdAt.toString()),
+        },
       };
     },
     message: async (parent, { id }, { models }) => models.Message.findByPk(id),
