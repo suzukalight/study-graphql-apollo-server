@@ -4,12 +4,15 @@ import bcrypt from 'bcrypt';
 import { sequelize } from '../infrastructure/sequelize';
 import Message from './message';
 
+export type Role = 'member' | 'admin';
+
 class User extends Model {
   public id!: number;
   public lastName!: string;
   public firstName!: string;
   public email!: string;
   public password!: string;
+  public role?: Role;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -61,6 +64,9 @@ User.init(
         notEmpty: true,
         len: [7, 42],
       },
+    },
+    role: {
+      type: DataTypes.STRING,
     },
   },
   {
