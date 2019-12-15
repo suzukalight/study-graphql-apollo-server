@@ -15,7 +15,7 @@ const resolvers: IResolvers<Message, ResolverContext> = {
     createMessage: combineResolvers(isAuthenticated, async (parent, { text }, { me, models }) =>
       models.Message.create({
         text,
-        userId: me.id,
+        userId: me?.id,
       }),
     ),
     deleteMessage: combineResolvers(

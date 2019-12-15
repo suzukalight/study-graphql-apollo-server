@@ -8,6 +8,7 @@ import schema from './schema';
 import resolvers from './resolvers';
 import models, { sequelize } from './models';
 import { createUsersWithMessages } from './seed';
+import User from './models/user';
 
 dotenv.config();
 
@@ -17,12 +18,12 @@ app.use(cors());
 
 const getMe = async (req: Request) => {
   const token = <string>req.headers['x-token'];
-  if (token) {
-    try {
-      return jwt.verify(token, <string>process.env.JWT_SECRET);
-    } catch (e) {
-      throw new AuthenticationError('Your session expired. Sign in again.');
-    }
+  if (!token) return null;
+
+  try {
+    return <User>jwt.verify(token, <string>process.env.JWT_SECRET);
+  } catch (e) {
+    throw new AuthenticationError('Your session expired. Sign in again.');
   }
 };
 
