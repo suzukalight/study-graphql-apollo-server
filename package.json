@@ -26,6 +26,7 @@
     "dev:04": "yarn workspace 04-validation dev",
     "dev:05": "yarn workspace 05-authentication dev",
     "dev:06": "yarn workspace 06-authorization dev",
-    "dev": "yarn dev:06"
+    "dev:07": "yarn workspace 07-custom-scalar dev",
+    "dev": "yarn dev:07"
   }
 }
