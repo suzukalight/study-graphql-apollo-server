@@ -1,6 +1,6 @@
 import { Models } from './models';
 
-export const createUsersWithMessages = async (models: Models) => {
+export const createUsersWithMessages = async (models: Models, date = new Date()) => {
   await models.User.create({
     firstName: 'masahiko',
     lastName: 'kubara',
@@ -19,5 +19,10 @@ export const createUsersWithMessages = async (models: Models) => {
 
   await user2.createMessage({
     text: 'associate message',
+    createdAt: date,
+  });
+  await user2.createMessage({
+    text: 'message #2',
+    createdAt: date,
   });
 };
