@@ -17,12 +17,10 @@ export const createUsersWithMessages = async (models: Models, date = new Date())
     role: 'admin',
   });
 
-  await user2.createMessage({
-    text: 'associate message',
-    createdAt: date,
-  });
-  await user2.createMessage({
-    text: 'message #2',
-    createdAt: date,
-  });
+  for (let i = 0; i < 5; i++) {
+    await user2.createMessage({
+      text: `message #${i + 1}`,
+      createdAt: new Date(date).setSeconds(date.getSeconds() + i),
+    });
+  }
 };
