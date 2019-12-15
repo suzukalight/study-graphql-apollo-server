@@ -6,6 +6,7 @@ export const createUsersWithMessages = async (models: Models) => {
     lastName: 'kubara',
     email: 'masahiko_kubara@email.com',
     password: 'masahikokubara',
+    role: 'member',
   });
 
   const user2 = await models.User.create({
@@ -13,6 +14,7 @@ export const createUsersWithMessages = async (models: Models) => {
     lastName: 'light',
     email: 'suzukalight@email.com',
     password: 'suzukalight',
+    role: 'admin',
   });
 
   await user2.createMessage({
