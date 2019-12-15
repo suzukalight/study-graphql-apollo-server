@@ -12,8 +12,11 @@ export const isMessageOwner = async (
   { models, me }: ResolverContext,
 ) => {
   const message = await models.Message.findByPk(id, { raw: true });
-  if (!message || message.userId !== me.id) {
+  if (!message || message.userId !== me?.id) {
     throw new ForbiddenError('Not authenticated as owner.');
   }
   return skip;
 };
+
+export const isAdmin = (parent: any, args: any, { me }: ResolverContext) =>
+  me?.role === 'admin' ? skip : new ForbiddenError('Not authorized as admin');
