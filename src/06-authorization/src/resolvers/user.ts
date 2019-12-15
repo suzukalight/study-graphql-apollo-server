@@ -1,17 +1,19 @@
 import { IResolvers, UserInputError, AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
+import { combineResolvers } from 'graphql-resolvers';
 
 import User from '../models/user';
 import { ResolverContext } from './typings';
+import { isAdmin } from './authorization';
 
 const createToken = async (user: User, secret: string, expiresIn: string) => {
-  const { id, email } = user;
-  return await jwt.sign({ id, email }, secret, { expiresIn });
+  const { id, email, role } = user;
+  return await jwt.sign({ id, email, role }, secret, { expiresIn });
 };
 
 const resolvers: IResolvers<User, ResolverContext> = {
   Query: {
-    me: async (parent, args, { models, me }) => models.User.findByPk(me.id),
+    me: async (parent, args, { models, me }) => models.User.findByPk(me?.id),
     users: async (parent, args, { models }) => models.User.findAll(),
     user: async (parent, { id }, { models }) => models.User.findByPk(id),
   },
@@ -30,6 +32,9 @@ const resolvers: IResolvers<User, ResolverContext> = {
 
       return { token: createToken(user, jwt.secret, jwt.expiresIn) };
     },
+    deleteUser: combineResolvers(isAdmin, async (parent, { id }, { models }) =>
+      models.User.destroy({ where: { id } }),
+    ),
   },
 
   User: {
