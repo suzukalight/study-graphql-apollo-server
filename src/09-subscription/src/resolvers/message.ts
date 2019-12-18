@@ -5,6 +5,7 @@ import { Op } from 'sequelize';
 import Message from '../models/message';
 import { ResolverContext } from './typings';
 import { isAuthenticated, isMessageOwner } from './authorization';
+import pubsub, { EVENTS } from '../subscription';
 
 const toCursorHash = (string: string) => Buffer.from(string).toString('base64');
 const fromCursorHash = (string: string) => Buffer.from(string, 'base64').toString('ascii');
@@ -37,12 +38,16 @@ const resolvers: IResolvers<Message, ResolverContext> = {
   },
 
   Mutation: {
-    createMessage: combineResolvers(isAuthenticated, async (parent, { text }, { me, models }) =>
-      models.Message.create({
+    createMessage: combineResolvers(isAuthenticated, async (parent, { text }, { me, models }) => {
+      const message = models.Message.create({
         text,
         userId: me?.id,
-      }),
-    ),
+      });
+
+      pubsub.publish(EVENTS.MESSAGE.CREATED, { messageCreated: { message } });
+
+      return message;
+    }),
     deleteMessage: combineResolvers(
       isAuthenticated,
       isMessageOwner,
@@ -51,6 +56,12 @@ const resolvers: IResolvers<Message, ResolverContext> = {
           where: { id },
         }),
     ),
+  },
+
+  Subscription: {
+    messageCreated: {
+      subscribe: () => pubsub.asyncIterator(EVENTS.MESSAGE.CREATED),
+    },
   },
 
   Message: {
