@@ -11,6 +11,10 @@ const schema = gql`
     deleteMessage(id: ID!): Boolean!
   }
 
+  extend type Subscription {
+    messageCreated: MessageCreated!
+  }
+
   type MessageConnection {
     edges: [Message!]!
     pageInfo: PageInfo!
@@ -26,6 +30,10 @@ const schema = gql`
     text: String!
     user: User!
     createdAt: Date!
+  }
+
+  type MessageCreated {
+    message: Message!
   }
 `;
 
