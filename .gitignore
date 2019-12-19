@@ -113,4 +113,4 @@ typings/
 .dynamodb/
 
 # SQLite
-database.sqlite
+*.sqlite
