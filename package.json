@@ -29,6 +29,7 @@
     "dev:07": "yarn workspace 07-custom-scalar dev",
     "dev:08": "yarn workspace 08-pagination dev",
     "dev:09": "yarn workspace 09-subscription dev",
-    "dev": "yarn dev:09"
+    "dev:10": "yarn workspace 10-testing dev",
+    "dev": "yarn dev:10"
   }
 }
