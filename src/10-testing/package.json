@@ -37,7 +37,7 @@
   "scripts": {
     "dev": "ts-node-dev ./src/index.ts",
     "lint": "eslint --fix --ext .jsx,.js,.tsx,.ts ./src/",
-    "test-server": "TEST_DATABASE='./testdatabase.sqlite' yarn dev",
+    "test-server": "TEST_DATABASE='./testdatabase.sqlite' ts-node-dev ./src/index.ts",
     "test": "jest"
   }
 }
