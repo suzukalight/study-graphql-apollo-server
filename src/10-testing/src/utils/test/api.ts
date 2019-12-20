@@ -28,6 +28,29 @@ const GET_USER = `
   }
 `;
 
+export interface SignUpData {
+  token: string;
+}
+
+export interface SignUpResponse {
+  data: { signIn: SignInData };
+}
+
+export interface SignUpInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+const SIGN_UP = `
+  mutation ($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
+    signUp(firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
+      token
+    }
+  }
+`;
+
 export interface SignInData {
   token: string;
 }
@@ -68,6 +91,9 @@ export interface DeleteUserResponse {
 
 export const user = async (variables: GetUserInput) =>
   axios.post<UserResponse>(API_URL, { query: GET_USER, variables });
+
+export const signUp = async (variables: SignUpInput) =>
+  axios.post<SignUpResponse>(API_URL, { query: SIGN_UP, variables });
 
 export const signIn = async (variables: SignInInput) =>
   axios.post<SignInResponse>(API_URL, { query: SIGN_IN, variables });

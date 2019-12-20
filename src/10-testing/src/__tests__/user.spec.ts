@@ -1,4 +1,4 @@
-import { user, signIn, deleteUser, UserResponse } from '../utils/test/api';
+import { user, signIn, deleteUser, UserResponse, signUp } from '../utils/test/api';
 
 describe('users', () => {
   it('user is user', () => {
@@ -48,6 +48,31 @@ describe('users', () => {
       } = await deleteUser({ id: '3' }, token);
 
       expect(errors[0].message).toBe('Not authorized as admin');
+    });
+
+    it('returns id', async () => {
+      await signUp({
+        firstName: 'new',
+        lastName: 'user',
+        email: 'newuser@email.com',
+        password: 'newuser',
+      });
+
+      const {
+        data: {
+          data: {
+            signIn: { token },
+          },
+        },
+      } = await signIn({ email: 'suzukalight@email.com', password: 'suzukalight' });
+
+      const {
+        data: {
+          data: { deleteUser: result },
+        },
+      } = await deleteUser({ id: '3' }, token);
+
+      expect(result).toBeTruthy();
     });
   });
 });
