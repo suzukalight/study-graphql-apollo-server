@@ -14,6 +14,7 @@ class User extends Model {
   public password!: string;
   public role?: Role;
 
+  public readonly username!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
