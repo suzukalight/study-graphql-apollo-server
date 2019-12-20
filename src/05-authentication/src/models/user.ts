@@ -67,8 +67,8 @@ User.init(
     tableName: 'users',
     sequelize: sequelize,
     hooks: {
-      beforeCreate: async (user, options) => {
-        user.password = await generatePasswordHash(user);
+      beforeCreate: async user => {
+        user.set('password', await generatePasswordHash(user));
       },
     },
   },

@@ -30,7 +30,7 @@ class User extends Model {
   };
 }
 
-const generatePasswordHash = async (user: User) => {
+const generatePasswordHash = async (user: User): Promise<string> => {
   const saltRounds = 10;
   return await bcrypt.hash(user.password, saltRounds);
 };
@@ -74,8 +74,8 @@ User.init(
     tableName: 'users',
     sequelize: sequelize,
     hooks: {
-      beforeCreate: async (user, options) => {
-        user.password = await generatePasswordHash(user);
+      beforeCreate: async user => {
+        user.set('password', await generatePasswordHash(user));
       },
     },
   },

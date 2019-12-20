@@ -1,5 +1,4 @@
 import { IResolvers } from 'apollo-server-express';
-import uuidv4 from 'uuid/v4';
 
 const resolvers: IResolvers = {
   Query: {

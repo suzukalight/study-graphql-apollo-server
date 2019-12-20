@@ -17,11 +17,11 @@ const app = express();
 app.use(cors());
 
 const getMe = async (req: Request) => {
-  const token = <string>req.headers['x-token'];
+  const token = req.headers['x-token'] as string;
   if (!token) return null;
 
   try {
-    return <User>jwt.verify(token, <string>process.env.JWT_SECRET);
+    return jwt.verify(token, process.env.JWT_SECRET as string) as User;
   } catch (e) {
     throw new AuthenticationError('Your session expired. Sign in again.');
   }
