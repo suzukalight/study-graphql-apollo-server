@@ -1,4 +1,4 @@
-import { user, UserData } from '../utils/test/api';
+import { user, signIn, deleteUser, UserResponse } from '../utils/test/api';
 
 describe('users', () => {
   it('user is user', () => {
@@ -7,7 +7,7 @@ describe('users', () => {
 
   describe('user(id: String!): User', () => {
     it('returns a user when user can be found', async () => {
-      const expectedResult: { data: { user: UserData } } = {
+      const expectedResult: UserResponse = {
         data: {
           user: {
             id: '1',
@@ -30,6 +30,24 @@ describe('users', () => {
 
       const result = await user({ id: '99999' });
       expect(result.data).toMatchObject(expectedResult);
+    });
+  });
+
+  describe('signIn and deleteUser', () => {
+    it('returns error when user is not admin', async () => {
+      const {
+        data: {
+          data: {
+            signIn: { token },
+          },
+        },
+      } = await signIn({ email: 'masahiko_kubara@email.com', password: 'masahikokubara' });
+
+      const {
+        data: { errors },
+      } = await deleteUser({ id: '3' }, token);
+
+      expect(errors[0].message).toBe('Not authorized as admin');
     });
   });
 });
