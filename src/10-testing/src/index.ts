@@ -67,7 +67,7 @@ sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
     createUsersWithMessages(models);
   }
 
-  httpServer.listen({ port: 23456 }, () => {
-    console.log('Apollo Server on http://localhost:23456/graphql');
+  httpServer.listen({ port: process.env.DB_PORT }, () => {
+    console.log(`Apollo Server on http://localhost:${process.env.DB_PORT}/graphql`);
   });
 });

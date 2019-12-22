@@ -1,6 +1,9 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
 
-const API_URL = 'http://localhost:23456/graphql';
+dotenv.config();
+
+const API_URL = `http://localhost:${process.env.DB_PORT}/graphql`;
 
 export interface UserData {
   id: string;
