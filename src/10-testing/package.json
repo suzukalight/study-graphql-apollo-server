@@ -38,6 +38,6 @@
     "dev": "ts-node-dev ./src/index.ts",
     "lint": "eslint --fix --ext .jsx,.js,.tsx,.ts ./src/",
     "test-server": "TEST_DATABASE='./testdatabase.sqlite' ts-node-dev ./src/index.ts",
-    "test": "jest"
+    "test": "TEST_DATABASE='./testdatabase.sqlite' jest"
   }
 }

@@ -1,6 +1,11 @@
 import { user, signIn, deleteUser, UserResponse, signUp } from '../utils/test/api';
+import { reset } from '../utils/test/db';
 
 describe('users', () => {
+  beforeEach(async () => {
+    await reset();
+  });
+
   it('user is user', () => {
     expect('user').toBe('user');
   });
