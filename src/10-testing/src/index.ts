@@ -8,7 +8,6 @@ import http from 'http';
 import schema from './schema';
 import resolvers from './resolvers';
 import models, { sequelize } from './models';
-import { createUsersWithMessages } from './seed';
 import User from './models/user';
 
 dotenv.config();
@@ -60,13 +59,7 @@ server.applyMiddleware({ app, path: '/graphql' });
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
-const eraseDatabaseOnSync = true;
-
-sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
-  if (eraseDatabaseOnSync) {
-    createUsersWithMessages(models);
-  }
-
+sequelize.sync().then(async () => {
   httpServer.listen({ port: process.env.DB_PORT }, () => {
     console.log(`Apollo Server on http://localhost:${process.env.DB_PORT}/graphql`);
   });
