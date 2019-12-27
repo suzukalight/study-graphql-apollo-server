@@ -65,7 +65,7 @@ const resolvers: IResolvers<Message, ResolverContext> = {
   },
 
   Message: {
-    user: async (message, args, { models }) => models.User.findByPk(message.userId),
+    user: async (message, args, { loaders }) => loaders.user.load(message.userId),
   },
 };
 
