@@ -30,6 +30,7 @@
     "dev:08": "yarn workspace 08-pagination dev",
     "dev:09": "yarn workspace 09-subscription dev",
     "dev:10": "yarn workspace 10-testing dev",
-    "dev": "yarn dev:10"
+    "dev:11": "yarn workspace 11-data-loader dev",
+    "dev": "yarn dev:11"
   }
 }
