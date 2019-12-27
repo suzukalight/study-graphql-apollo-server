@@ -1,3 +1,5 @@
+import DataLoader from 'dataloader';
+
 import User from '../models/user';
 import { Models } from '../models';
 
@@ -7,5 +9,8 @@ export interface ResolverContext {
   jwt: {
     secret: string;
     expiresIn: string;
+  };
+  loaders: {
+    user: DataLoader<number, User>;
   };
 }
