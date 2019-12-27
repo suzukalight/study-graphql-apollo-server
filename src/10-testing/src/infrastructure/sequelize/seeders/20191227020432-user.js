@@ -16,6 +16,8 @@ module.exports = {
           email: 'masahiko_kubara@email.com',
           password: await generatePasswordHash('masahikokubara'),
           role: 'member',
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           firstName: 'suzuka',
@@ -23,6 +25,8 @@ module.exports = {
           email: 'suzukalight@email.com',
           password: await generatePasswordHash('suzukalight'),
           role: 'admin',
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {},
