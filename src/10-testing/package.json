@@ -38,6 +38,9 @@
     "dev": "ts-node-dev ./src/index.ts",
     "lint": "eslint --fix --ext .jsx,.js,.tsx,.ts ./src/",
     "test-server": "NODE_ENV=test ts-node-dev ./src/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "sequelize-cli": "npx sequelize-cli",
+    "db:migrate": "npx sequelize-cli db:migrate",
+    "db:seed:all": "npx sequelize-cli db:seed:all"
   }
 }
