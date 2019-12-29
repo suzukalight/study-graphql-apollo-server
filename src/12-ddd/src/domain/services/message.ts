@@ -1,16 +1,13 @@
 import { Op } from 'sequelize';
 
 import Message from '../models/message';
-import { ResolverContext } from '../../application/resolvers/typings';
-import pubsub, { EVENTS } from '../../application/subscription';
-
-const toCursorHash = (string: string) => Buffer.from(string).toString('base64');
-const fromCursorHash = (string: string) => Buffer.from(string, 'base64').toString('ascii');
+import { fromCursorHash, toCursorHash } from '../utils/hash';
+import { ServiceContext } from '../typings';
+// import pubsub, { EVENTS } from '../../application/subscription';
 
 export const findAll = async (
-  parent: Message,
   { cursor, limit = 100 }: { cursor: string; limit: number },
-  { models }: ResolverContext,
+  { models }: ServiceContext,
 ) => {
   const cursorOptions = cursor
     ? {
@@ -34,26 +31,19 @@ export const findAll = async (
   };
 };
 
-export const findOne = async (
-  parent: Message,
-  { id }: { id: number },
-  { models }: ResolverContext,
-) => models.Message.findByPk(id);
+export const findOne = async (id: number, { models }: ServiceContext) =>
+  models.Message.findByPk(id);
 
-export const create = async (
-  parent: Message,
-  { text }: Message,
-  { me, models }: ResolverContext,
-) => {
+export const create = async ({ text }: Message, { me, models }: ServiceContext) => {
   const message = await models.Message.create({
     text,
     userId: me?.id,
   });
 
-  pubsub.publish(EVENTS.MESSAGE.CREATED, { messageCreated: { message } });
+  // pubsub.publish(EVENTS.MESSAGE.CREATED, { messageCreated: { message } });
 
   return message;
 };
 
-export const remove = async (parent: Message, { id }: Message, { models }: ResolverContext) =>
+export const remove = async (id: number, { models }: ServiceContext) =>
   models.Message.destroy({ where: { id } });
