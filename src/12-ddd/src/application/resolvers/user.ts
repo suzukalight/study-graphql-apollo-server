@@ -2,9 +2,12 @@ import { IResolvers, UserInputError, AuthenticationError } from 'apollo-server-e
 import jwt from 'jsonwebtoken';
 import { combineResolvers } from 'graphql-resolvers';
 
-import User from '../../domain/models/user';
-import { ResolverContext } from './typings';
 import { isAdmin } from './authorization';
+import User from '../../domain/models/user';
+import * as UserService from '../../domain/services/user';
+// import * as MessageService from '../../domain/services/message';
+
+import { ResolverContext } from './typings';
 
 const createToken = async (user: User, secret: string, expiresIn: string) => {
   const { id, email, role } = user;
@@ -13,18 +16,21 @@ const createToken = async (user: User, secret: string, expiresIn: string) => {
 
 const resolvers: IResolvers<User, ResolverContext> = {
   Query: {
-    me: async (parent, args, { models, me }) => models.User.findByPk(me?.id),
-    users: async (parent, args, { models }) => models.User.findAll(),
-    user: async (parent, { id }, { models }) => models.User.findByPk(id),
+    me: async (parent, args, { models, me }) => {
+      if (!me?.id) return null;
+      return UserService.findOne(me?.id, { models, me });
+    },
+    users: (parent, options, ctx) => UserService.findAll(options, ctx),
+    user: (parent, { id }, ctx) => UserService.findOne(id, ctx),
   },
 
   Mutation: {
-    signUp: async (parent, { lastName, firstName, email, password }, { models, jwt }) => {
-      const user = await models.User.create({ lastName, firstName, email, password });
+    signUp: async (parent, args, { models, jwt }) => {
+      const user = await UserService.create(args, { models });
       return { token: createToken(user, jwt.secret, jwt.expiresIn) };
     },
     signIn: async (parent, { email, password }, { models, jwt }) => {
-      const user = await models.User.findByEmail(email);
+      const user = await UserService.findByEmail(email, { models });
       if (!user) throw new UserInputError('No user found with this login credentials.');
 
       const isValid = await user.validatePassword(password);
@@ -32,17 +38,14 @@ const resolvers: IResolvers<User, ResolverContext> = {
 
       return { token: createToken(user, jwt.secret, jwt.expiresIn) };
     },
-    deleteUser: combineResolvers(isAdmin, async (parent, { id }, { models }) =>
-      models.User.destroy({ where: { id } }),
+    deleteUser: combineResolvers(isAdmin, async (parent, { id }, ctx) =>
+      UserService.remove(id, ctx),
     ),
   },
 
   User: {
     username: async user => `${user.firstName} ${user.lastName}`,
-    messages: async (user, args, { models }) =>
-      models.Message.findAll({
-        where: { userId: user.id },
-      }),
+    messages: async (user, args, ctx) => ctx.models.Message.findAll({ where: { userId: user.id } }),
   },
 };
 
