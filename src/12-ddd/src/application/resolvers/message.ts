@@ -10,7 +10,7 @@ import { ResolverContext } from './typings';
 
 const resolvers: IResolvers<Message, ResolverContext> = {
   Query: {
-    messages: async (parent, args, ctx) => MessageService.findAll(args, ctx),
+    messages: async (parent, args, ctx) => MessageService.findAll({ pageInfo: args }, ctx),
     message: (parent, { id }, ctx) => MessageService.findOne(id, ctx),
   },
 
