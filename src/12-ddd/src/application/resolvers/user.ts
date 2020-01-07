@@ -5,7 +5,7 @@ import { combineResolvers } from 'graphql-resolvers';
 import { isAdmin } from './authorization';
 import User from '../../domain/models/user';
 import * as UserService from '../../domain/services/user';
-// import * as MessageService from '../../domain/services/message';
+import * as MessageService from '../../domain/services/message';
 
 import { ResolverContext } from './typings';
 
@@ -45,7 +45,8 @@ const resolvers: IResolvers<User, ResolverContext> = {
 
   User: {
     username: async user => `${user.firstName} ${user.lastName}`,
-    messages: async (user, args, ctx) => ctx.models.Message.findAll({ where: { userId: user.id } }),
+    messages: async (user, args, { models }) =>
+      MessageService.findAll({ filters: { userId: user.id } }, { models }),
   },
 };
 
