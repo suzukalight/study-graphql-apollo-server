@@ -32,6 +32,7 @@
     "dev:10": "yarn workspace 10-testing dev",
     "dev:11": "yarn workspace 11-data-loader dev",
     "dev:12": "yarn workspace 12-ddd dev",
-    "dev": "yarn dev:12"
+    "dev:13": "yarn workspace 13-cqrs dev",
+    "dev": "yarn dev:13"
   }
 }
