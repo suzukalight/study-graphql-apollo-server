@@ -6,5 +6,5 @@ import { ResolverContext } from '../typings';
 export const messages = async (parent: Message, args: PageInfo, ctx: ResolverContext) =>
   MessageService.findAll({ pageInfo: args }, ctx);
 
-export const message = async (parent: Message, { id }: Message, ctx: ResolverContext) =>
+export const message = async (parent: Message, { id }: FindOneOptions, ctx: ResolverContext) =>
   MessageService.findOne(id, ctx);
