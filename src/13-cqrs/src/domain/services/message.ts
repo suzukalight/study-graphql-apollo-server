@@ -12,11 +12,6 @@ type Filters = {
 
 type Orders = {};
 
-type PageInfo = {
-  cursor?: string;
-  limit?: number;
-};
-
 type FindAllArgs = {
   filters?: Filters;
   orders?: Orders;
