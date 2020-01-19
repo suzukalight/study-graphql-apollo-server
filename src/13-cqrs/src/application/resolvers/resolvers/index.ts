@@ -1,5 +1,7 @@
-import * as message from './message';
+import Message from './message';
+import User from './user';
 
-export const schemaType = {
-  ...message,
+export default {
+  Message,
+  User,
 };
