@@ -6,7 +6,7 @@
   "dependencies": {
     "apollo-server": "^2.9.13",
     "apollo-server-express": "^2.9.13",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "dataloader": "^2.0.0",
     "dotenv": "^8.2.0",
